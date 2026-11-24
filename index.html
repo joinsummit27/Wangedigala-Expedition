@@ -66,6 +66,7 @@ main>section{margin:auto}
 .card p:last-child{margin:0}
 .card b{color:var(--gold)}
 .form{display:block;margin-top:14px;text-align:center;background:var(--gold);color:var(--bg);font:700 16px var(--sans);text-decoration:none;padding:13px 20px;border-radius:999px}
+.dock{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:488px;margin:0 auto;z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.45)}
 .sign{margin-top:26px;font:italic 500 18px var(--serif);color:var(--mist)}
 .mtn{position:fixed;left:0;right:0;bottom:0;width:100%;height:30vh;pointer-events:none}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:4}
@@ -104,10 +105,10 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:4}
 (function(){
 var DATA={
  accepted:{cls:"yes",h:"You’ve made the summit.",lead:"You have been selected for the Wangedikanda Overnight Expedition.",
-  body:'<p>You are one of <b>20 students</b> joining us for a night at Wangedigala, a morning climb to Wangedikanda, and a finish at Bambarakanda Waterfall. You will also earn <b>4 Founders Award skill hours</b>.</p><p><b>Date:</b> 23 January 2027<br><b>Bus leaves GCC:</b> 4:00 AM<br><b>Fee:</b> Rs. 13,500 in total</p><p><b>Advance:</b> Rs. 1,500 on or before 9 December<br><b>Balance:</b> Rs. 12,000 before 12 January</p><p>Your place is confirmed once the advance is paid.</p><p>Please also fill in the participant form so we have your details:<a class="form" href="https://forms.gle/BfMBcmVv6SmQCMKW6" target="_blank" rel="noopener">Open the participant form</a></p>',
-  sign:"Welcome to the team. See you at base camp, 4 AM.",fx:true},
+  body:'<p>You are one of <b>20 students</b> joining us for a night at Wangedigala, a morning climb to Wangedikanda, and a finish at Bambarakanda Waterfall. You will also earn <b>4 Founders Award skill hours</b>.</p><p><b>Date:</b> 23 January 2027<br><b>Bus leaves GCC:</b> 4:00 AM<br><b>Fee:</b> Rs. 13,500 in total</p><p><b>Advance:</b> Rs. 1,500 on or before 9 December<br><b>Balance:</b> Rs. 12,000 before 12 January</p><p>Your place is confirmed once the advance is paid.</p><p>Please also fill in the participant form so we have your details.</p>',
+  sign:"Welcome to the team. See you at base camp, 4 AM.",fx:true,form:true},
  waitlist:{cls:"wait",h:"Holding at base camp.",lead:"You are on our waiting list for the expedition.",
-  body:'<p>All 20 places have been filled, but your application stood out. If a place opens up, we will contact you by <b>[date]</b>.</p><p>Please keep <b>23 January 2027</b> free until then, just in case.</p>',
+  body:'<p>All 20 places have been filled, but your application stood out. If a place opens up, we will contact you.</p><p>Please keep <b>23 January 2027</b> free, just in case.</p>',
   sign:"Thank you for your patience.",fx:false},
  declined:{cls:"no",h:"Thank you for applying.",lead:"We are sorry, we could not offer you a place this time.",
   body:'<p>With only 20 places, we had to turn away many strong applicants. This is not a reflection of your ability or enthusiasm.</p><p>We hope to run more expeditions, and we would love to see you apply again.</p>',
@@ -142,7 +143,7 @@ function showResult(){window.scrollTo(0,0);
   r.classList.remove("hide");
   var els=r.querySelectorAll(".fade");
   els.forEach(function(e,i){setTimeout(function(){e.classList.add("on")},300+i*700)});
-  if(res.fx)confetti();
+  if(res.fx)confetti();if(res.form){r.style.paddingBottom="84px";var a=document.createElement("a");a.className="form dock";a.href="https://forms.gle/BfMBcmVv6SmQCMKW6";a.target="_blank";a.rel="noopener";a.textContent="Fill in the participant form";a.style.opacity=0;a.style.transition="opacity 1s ease";document.body.appendChild(a);setTimeout(function(){a.style.opacity=1},2800)}
 }
 
 async function runCountdown(){
