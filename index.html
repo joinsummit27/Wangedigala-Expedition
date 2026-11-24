@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your Wangedikanda Expedition Decision</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Lato:wght@400;700&display=swap">
+<style>
+:root{--bg:#0a1630;--bg2:#1e569c;--paper:#ffffff;--ink:#0a1630;--gold:#c2cdff;--wax:#1e569c;--mist:#c2cdff;
+ --serif:"Cormorant Garamond",Georgia,serif;--sans:"Lato",system-ui,sans-serif;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:radial-gradient(120% 80% at 50% 0%,var(--bg2),var(--bg) 70%);color:var(--mist);font-family:var(--sans);overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;opacity:.6}
+main{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.hide{display:none!important}
+.fade{opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
+.fade.on{opacity:1;transform:none}
+
+/* envelope */
+#env{text-align:center}
+.envelope{position:relative;width:min(320px,86vw);aspect-ratio:1.45;margin:0 auto 28px;background:#c2cdff;border-radius:6px;box-shadow:0 20px 50px rgba(0,0,0,.5);cursor:pointer;border:0;display:block;padding:0}
+.envelope::before{content:"";position:absolute;inset:0;border-radius:6px;background:linear-gradient(160deg,transparent 49.5%,rgba(0,0,0,.08) 50%),linear-gradient(-160deg,transparent 49.5%,rgba(0,0,0,.08) 50%)}
+.flap{position:absolute;left:0;right:0;top:0;height:58%;background:#ffffff;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .8s ease;border-radius:6px 6px 0 0}
+.seal{position:absolute;left:50%;top:52%;width:62px;height:62px;margin:-31px 0 0 -31px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#1e569c,#0a1630 90%);box-shadow:0 4px 10px rgba(0,0,0,.4);display:grid;place-items:center;color:#c2cdff;font:700 26px var(--serif);animation:pulse 2.2s ease-in-out infinite;transition:opacity .4s}
+@keyframes pulse{50%{transform:scale(1.07);box-shadow:0 0 0 10px rgba(30,86,156,0),0 4px 18px rgba(30,86,156,.7)}}
+.envelope.open .flap{transform:rotateX(180deg)}
+.envelope.open .seal{opacity:0;animation:none}
+.envelope.open{animation:drop .9s ease .5s forwards}
+@keyframes drop{to{transform:translateY(80px);opacity:0}}
+.hint{font:italic 500 20px var(--serif);color:var(--gold);letter-spacing:.02em}
+
+/* letter */
+#letter{width:min(520px,100%);background:var(--paper);color:var(--ink);border-radius:4px;padding:36px 28px 32px;box-shadow:0 30px 70px rgba(0,0,0,.55);animation:rise 1s ease both;position:relative}
+@keyframes rise{from{opacity:0;transform:translateY(60px) rotate(-1.5deg)}to{opacity:1;transform:none}}
+.crest{text-align:center;border-bottom:1px solid rgba(10,22,48,.25);padding-bottom:16px;margin-bottom:22px}
+.crest b{display:block;font:700 26px/1.2 var(--serif)}
+.crest span{font:italic 500 16px var(--serif);opacity:.75}
+#letter p{font:500 19px/1.6 var(--serif);margin:0 0 14px}
+.line{opacity:0;transition:opacity 1.2s ease}
+.line.on{opacity:1}
+.dots span{display:inline-block;animation:blink 1.2s infinite;font-size:28px;line-height:1}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.btn{display:block;margin:22px auto 0;background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:14px 30px;font:700 16px var(--sans);cursor:pointer;box-shadow:0 0 0 0 rgba(30,86,156,.6);animation:glow 1.8s infinite}
+.btn:focus-visible,.envelope:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+@keyframes glow{70%{box-shadow:0 0 0 14px rgba(30,86,156,0)}}
+
+/* countdown */
+#count{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg);z-index:5}
+#count div{text-align:center;padding:0 16px;font:700 min(13vw,84px)/1.1 var(--serif);color:var(--gold);animation:tick .9s ease-out forwards}
+@keyframes tick{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.15);opacity:.1}}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
+#flash.go{animation:fl 1s ease-out}
+@keyframes fl{0%{opacity:.9}100%{opacity:0}}
+
+/* result */
+#result{width:min(520px,100%);text-align:center}
+#result h1{font:700 clamp(44px,13vw,72px)/1.05 var(--serif);margin:0 0 10px;color:var(--gold)}
+#result.no h1,#result.wait h1{color:var(--paper);font-size:clamp(36px,10vw,54px)}
+#result .lead{font:italic 500 22px/1.45 var(--serif);color:var(--paper);margin:0 auto 26px;max-width:30ch}
+.card{background:rgba(194,205,255,.08);border:1px solid rgba(194,205,255,.35);border-radius:10px;padding:20px 22px;text-align:left;color:var(--paper)}
+.card p{margin:0 0 10px;font-size:16px;line-height:1.55}
+.card p:last-child{margin:0}
+.card b{color:var(--gold)}
+.sign{margin-top:26px;font:italic 500 18px var(--serif);color:var(--mist)}
+.mtn{position:fixed;left:0;right:0;bottom:0;width:100%;height:30vh;pointer-events:none}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:4}
+@media (prefers-reduced-motion:reduce){.seal,.btn{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<canvas id="fx"></canvas>
+<div id="flash"></div>
+<svg class="mtn" viewBox="0 0 800 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><path d="M0,200 L0,140 L90,90 L150,120 L260,40 L340,110 L430,70 L540,130 L640,60 L730,115 L800,85 L800,200Z" fill="#1e569c" opacity=".5"/><path d="M260,40 L240,62 L252,58 L260,66 L270,56 L282,62Z M640,60 L622,80 L634,76 L641,84 L650,75 L660,80Z" fill="#c2cdff" opacity=".85"/><path d="M260,40 L260,16" stroke="#ffffff" stroke-width="1.5"/><path d="M260,16 L278,22 L260,28Z" fill="#c2cdff"/><path d="M0,200 L0,170 L120,125 L200,160 L330,100 L450,165 L580,120 L700,170 L800,140 L800,200Z" fill="#000000" opacity=".5"/></svg>
+<main>
+  <section id="env">
+    <button class="envelope" id="envBtn" aria-label="Open your letter"><div class="flap"></div><div class="seal">W</div></button>
+    <div class="hint">A letter has arrived for you. Tap the seal.</div>
+  </section>
+
+  <section id="letter" class="hide">
+    <div class="crest"><b>The Wangedikanda Overnight Expedition</b><span>Expedition Base Camp</span></div>
+    <p class="line">Dear Climber,</p>
+    <p class="line">Thank you for applying. We received many applications, and every one was read with care.</p>
+    <p class="line">There are only 20 places on the rope. Choosing between you was not easy.</p>
+    <p class="line">After long discussion, the team has plotted the route and made its decision.</p>
+    <p class="line dots" id="dots" aria-hidden="true"><span>&bull;</span> <span>&bull;</span> <span>&bull;</span></p>
+    <p class="line" id="ready"><i>The summit is in sight. Your decision is ready.</i></p>
+    <button class="btn hide" id="reveal">Begin the final ascent</button>
+  </section>
+
+  <section id="count" class="hide" aria-live="assertive"><div id="num">3</div></section>
+
+  <section id="result" class="hide"></section>
+</main>
+
+<script>
+(function(){
+var DATA={
+ accepted:{cls:"yes",h:"You’ve made the summit.",lead:"You have been selected for the Wangedikanda Overnight Expedition.",
+  body:'<p>You are one of <b>20 students</b> joining us for a night at Wangedigala, a morning climb to Wangedikanda, and a finish at Bambarakanda Waterfall. You will also earn <b>4 Founders Award skill hours</b>.</p><p><b>Date:</b> 23 January 2027<br><b>Bus leaves GCC:</b> 4:00 AM<br><b>Fee:</b> Rs. 13,500 in total</p><p><b>Advance:</b> Rs. 1,500 on or before 9 December<br><b>Balance:</b> Rs. 12,000 before 12 January</p><p>Your place is confirmed once the advance is paid.</p>',
+  sign:"Welcome to the team. See you at base camp, 4 AM.",fx:true},
+ waitlist:{cls:"wait",h:"Holding at base camp.",lead:"You are on our waiting list for the expedition.",
+  body:'<p>All 20 places have been filled, but your application stood out. If a place opens up, we will contact you by <b>[date]</b>.</p><p>Please keep <b>23 January 2027</b> free until then, just in case.</p>',
+  sign:"Thank you for your patience.",fx:false},
+ declined:{cls:"no",h:"Thank you for applying.",lead:"We are sorry, we could not offer you a place this time.",
+  body:'<p>With only 20 places, we had to turn away many strong applicants. This is not a reflection of your ability or enthusiasm.</p><p>We hope to run more expeditions, and we would love to see you apply again.</p>',
+  sign:"We hope to see you on the trail soon.",fx:false}
+};
+var key=(location.hash||"").slice(1).toLowerCase();
+var MAP={"r7k2xq":"accepted","w3m9tz":"waitlist","d5p8vn":"declined"};
+var res=DATA[MAP[key]];
+var $=function(id){return document.getElementById(id)};
+var sleep=function(ms){return new Promise(function(r){setTimeout(r,ms)})};
+
+/* starfield */
+var sc=$("stars"),sx=sc.getContext("2d"),stars=[];
+function sizeStars(){sc.width=innerWidth;sc.height=innerHeight;stars=[];for(var i=0;i<70;i++)stars.push({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.4+.3,p:Math.random()*6})}
+function drawStars(t){sx.clearRect(0,0,sc.width,sc.height);stars.forEach(function(s){sx.globalAlpha=.4+.6*Math.abs(Math.sin(t/1500+s.p));sx.fillStyle="#c2cdff";sx.beginPath();sx.arc(s.x,s.y,s.r,0,7);sx.fill()});requestAnimationFrame(drawStars)}
+sizeStars();addEventListener("resize",sizeStars);requestAnimationFrame(drawStars);
+
+/* confetti */
+function confetti(){
+  var c=$("fx"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
+  var cols=["#1e569c","#ffffff","#c2cdff","#1e569c","#c2cdff"],p=[];
+  for(var i=0;i<140;i++)p.push({x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,w:6+Math.random()*6,h:10+Math.random()*8,vy:2+Math.random()*3,vx:Math.random()*2-1,a:Math.random()*6,va:Math.random()*.2-.1,c:cols[i%5]});
+  var end=Date.now()+6000;
+  (function f(){x.clearRect(0,0,c.width,c.height);
+    p.forEach(function(q){q.y+=q.vy;q.x+=q.vx+Math.sin(q.a);q.a+=q.va;x.save();x.translate(q.x,q.y);x.rotate(q.a);x.fillStyle=q.c;x.fillRect(-q.w/2,-q.h/2,q.w,q.h);x.restore()});
+    if(Date.now()<end)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})();
+}
+
+function showResult(){
+  var r=$("result");r.className=res.cls;
+  r.innerHTML='<h1 class="fade">'+res.h+'</h1><p class="lead fade">'+res.lead+'</p><div class="card fade">'+res.body+'</div><p class="sign fade">'+res.sign+'</p>';
+  r.classList.remove("hide");
+  var els=r.querySelectorAll(".fade");
+  els.forEach(function(e,i){setTimeout(function(){e.classList.add("on")},300+i*700)});
+  if(res.fx)confetti();
+}
+
+async function runCountdown(){
+  $("letter").classList.add("hide");
+  var cs=$("count"),n=$("num");cs.classList.remove("hide");
+  var st=["Base Camp","Camp II","The Ridge"];for(var i=3;i>=1;i--){n.textContent=st[3-i];var c=n.cloneNode(true);n.parentNode.replaceChild(c,n);n=c;n.id="num";await sleep(1000)}
+  cs.classList.add("hide");$("flash").classList.add("go");showResult();
+}
+
+async function runLetter(){
+  $("env").classList.add("hide");
+  $("letter").classList.remove("hide");
+  var lines=document.querySelectorAll("#letter .line");
+  var gaps=[900,2200,2200,2400,2600,1800];
+  for(var i=0;i<lines.length;i++){await sleep(gaps[i]||1500);lines[i].classList.add("on");if(lines[i].id==="ready")$("dots").style.display="none"}
+  await sleep(900);$("reveal").classList.remove("hide");$("reveal").focus({preventScroll:true});
+}
+
+if(!res){
+  $("env").innerHTML='<p style="font:italic 500 22px Georgia,serif;color:#f2e9d4;max-width:28ch;margin:0 auto">This link looks incomplete. Please use the link from your email.</p>';
+}else{
+  $("envBtn").addEventListener("click",function(){
+    this.classList.add("open");
+    setTimeout(runLetter,1300);
+  },{once:true});
+  $("reveal").addEventListener("click",runCountdown,{once:true});
+}
+addEventListener("hashchange",function(){location.reload()});
+})();
+</script>
+</body>
+</html>
