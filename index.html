@@ -143,6 +143,13 @@ function vib(p){if(!RM&&navigator.vibrate){try{navigator.vibrate(p)}catch(e){}}}
 
 /* ---------- sound (all synthesized) ---------- */
 var AC=null,M=null,muted=false,bpm=60,hbOn=false;
+var SND={yay:"yay.mp3",sad:"sad.mp3"},BUF={};
+function loadSnd(){if(!AC)return;Object.keys(SND).forEach(function(k){if(BUF[k])return;fetch(SND[k]).then(function(r){return r.arrayBuffer()}).then(function(b){AC.decodeAudioData(b,function(d){BUF[k]=d},function(){})}).catch(function(){})})}
+function play(k,v){if(!AC||!BUF[k])return;var s=AC.createBufferSource(),g=AC.createGain();s.buffer=BUF[k];g.gain.value=v||1;s.connect(g);g.connect(M);s.start()}
+function holdMusic(){if(!AC)return;var t=AC.currentTime+.05;
+ [[523,0],[659,.25],[784,.5],[659,.75],[587,1],[698,1.25],[880,1.5],[698,1.75],[659,2],[784,2.25],[1047,2.5],[784,2.75],[698,3],[659,3.25],[587,3.5],[523,3.75]].forEach(function(n){tone(n[0],0,t+n[1],.01,.2,.09,"triangle")});
+ [[131,0],[196,.5],[175,1],[196,1.5],[165,2],[196,2.5],[147,3],[196,3.5]].forEach(function(n){tone(n[0],0,t+n[1],.01,.4,.14,"sine")});
+ tone(1568,0,t+4.3,.005,1.6,.12,"sine");tone(2349,0,t+4.3,.005,1,.05,"sine")}
 function A(){if(AC)return AC;try{AC=new(window.AudioContext||window.webkitAudioContext)();M=AC.createGain();M.gain.value=muted?0:.9;M.connect(AC.destination)}catch(e){AC=null}if(AC&&AC.state==="suspended")AC.resume();return AC}
 function nb(){var b=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate),d=b.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
 function env(g,t,a,pk,d){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(pk,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d)}
@@ -215,8 +222,8 @@ async function climb(){
   C.classList.add("hide");sp=1;mt.style.transform="";
   fog.style.transition="opacity "+(good?1.6:4)+"s ease";fog.style.opacity=0;
   fl.className="";void fl.offsetWidth;fl.className=good?"go":"soft";
-  if(good){boom();vib([90,40,140]);if(!RM){var m=$("main");m.classList.add("quake");setTimeout(function(){m.classList.remove("quake")},800)}setTimeout(function(){chord([262,330,392,523],5,.12)},250)}
-  else{setTimeout(function(){if(AC){var t=AC.currentTime;tone(220,0,t,1.5,3.5,.12);tone(330,0,t+.3,1.5,3.5,.07)}},300)}
+  if(good){boom();vib([90,40,140]);if(!RM){var m=$("main");m.classList.add("quake");setTimeout(function(){m.classList.remove("quake")},800)}setTimeout(function(){play("yay",1)},250)}
+  else{setTimeout(function(){if(res.cls==="no")play("sad",1);else holdMusic()},300)}
   showResult();
 }
 
@@ -232,7 +239,7 @@ if(!res){
   $("env").innerHTML='<p style="font:italic 400 22px Georgia,serif;color:#ffffff;max-width:28ch;margin:0 auto">This link looks incomplete. Please use the link from your email.</p>';
 }else{
   $("envBtn").addEventListener("click",function(){
-    A();crack();amb=wind();if(amb)amb.set(.05,350);
+    A();loadSnd();crack();amb=wind();if(amb)amb.set(.05,350);
     this.classList.add("open");
     setTimeout(runLetter,1400);
   },{once:true});
